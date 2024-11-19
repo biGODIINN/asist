@@ -4,11 +4,13 @@ import { Image, Button } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from "../screens/LoginScreen";
+import { HomeAdministrador } from '../screens/HomeAdminisrtrador/HomeAdministrador';
 import { HomeScreen } from "../screens/HomeScreen";
 import { PerfilStack } from './NavTrabajadores/PerfilStack';
 import { MarcacionStack } from './NavTrabajadores/MarcacionStack';
 import { SolicitudesStack } from './NavTrabajadores/SolicitudesStack';
 import { HistorialStack } from './NavTrabajadores/HistorialStack';
+import { AjustesStack } from './NavTrabajadores/AjustesStack';
 import { EnrolamientoStack } from './NavAdministrador/EnrolamientoStack';
 import { TrabajadoresStack } from './NavAdministrador/TrabajadoresStack';
 import { MetricasStack } from './NavAdministrador/MetricasStack';
@@ -36,10 +38,12 @@ function TrabajadorTabs() {
         />
       )
       })}>
-      <Tab.Screen name={screen.perfil.tab} component={PerfilStack} options={{ title: "Mi Perfil" }} />
+      {/* <Tab.Screen name={screen.perfil.tab} component={PerfilStack} options={{ title: "Mi Perfil" }} /> */}
       <Tab.Screen name={screen.marcacion.tab} component={MarcacionStack} options={{ title: "Marcación" }} />
       <Tab.Screen name={screen.historial.tab} component={HistorialStack} options={{ title: "Historial" }} />
       <Tab.Screen name={screen.solicitudes.tab} component={SolicitudesStack} options={{ title: "Solicitudes" }} />
+      <Tab.Screen name={screen.ajustes.tab} component={AjustesStack} options={{ title: "Ajuste" }} />
+
     </Tab.Navigator>
   );
 }
@@ -75,6 +79,7 @@ export function AppNavigation() {
     <Stack.Navigator initialRouteName="LoginScreen">
       <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="HomeAdministrador" component={HomeAdministrador} options={{ headerShown: false }} />
       <Stack.Screen name="TrabajadorTab" component={TrabajadorTabs} options={{ headerShown: false }} />
       <Stack.Screen name="AdminTab" component={AdminTabs} options={{ headerShown: false }} />
     </Stack.Navigator>
@@ -86,9 +91,9 @@ export function AppNavigation() {
 function screenOptions(route, color, size) {
     let iconSource;
 
-    if (route.name === screen.perfil.tab) {
-        iconSource = require('../../assets/img/mi perfil.png');
-    }
+    // if (route.name === screen.perfil.tab) {
+    //     iconSource = require('../../assets/img/mi perfil.png');
+    // }
 
     if (route.name === screen.marcacion.tab) {
         iconSource = require('../../assets/img/marcacion.png');
@@ -100,6 +105,10 @@ function screenOptions(route, color, size) {
 
     if (route.name === screen.solicitudes.tab) {
         iconSource = require('../../assets/img/solicitud.png'); 
+    }
+
+    if (route.name === screen.ajustes.tab) {
+      iconSource = require('../../assets/img/ajustes.png'); 
     }
 
     if (route.name === screen.enrolamiento.tab) {

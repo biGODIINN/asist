@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, ScrollView } from "react-native";
-import { Notificaciones } from "../components/Trabajador/Notificaciones";
-import { ResumenDiario } from "../components/Trabajador/ResumenDiario";
-import { Otros } from "../components/Trabajador/Otros";
-import { PerfilHome } from "../components/Trabajador/PerfilHome";
-import { ComponentNotificaciones } from "../components/Trabajador/ComponentNotificaciones";
+import { Notificaciones } from "../../components/Administrador/Notificaciones";
+import { ResumenDiario } from "../../components/Administrador/ResumenDiario";
+import { Otros } from "../../components/Administrador/Otros";
+import { PerfilHome } from "../../components/Administrador/PerfilHome";
+import { ComponentNotificaciones } from "../../components/Administrador/ComponentNotificaciones";
 
-export function HomeScreen() {
+export function HomeAdministrador() {
   return (
     <>
       <View style={styles.perfilHome}>

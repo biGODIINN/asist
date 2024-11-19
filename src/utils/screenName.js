@@ -24,6 +24,11 @@ const solicitudesStack = {
     // addsolicitudes: "AddSolicitudes",
 };
 
+const ajustesStack = {
+    tab: "AjustesTab",
+    ajustes: "Ajustes",
+};
+
 
 const enrolamientoStack = {
     tab: "EnrolamientoTab",
@@ -52,6 +57,7 @@ export const screen = {
     marcacion: marcacionStack,
     historial: historialStack,
     solicitudes: solicitudesStack,
+    ajustes: ajustesStack,
     enrolamiento: enrolamientoStack,
     metricas: metricasStack,
     solicitudesadmin: solicitudesadminStack,

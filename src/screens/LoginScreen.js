@@ -21,11 +21,13 @@ const LoginScreen = () => {
       try {
         const decodedToken = jwt_decode(token);
         console.log('Decoded Token:', decodedToken);  
-        const { rol } = decodedToken;  
+        const { rol } = decodedToken;  // Suponiendo que el rol está en decodedToken.rol
         if (rol === 1) {
-          navigation.navigate('HomeScreen');
+          navigation.navigate('HomeAdministrador');  // Si el rol es 1, navega a HomeAdministrador
+        } else if (rol === 2) {
+          navigation.navigate('HomeScreen');  // Si el rol es 2, navega a HomeScreen
         } else {
-          Alert.alert('Acceso denegado', 'No tienes permisos para acceder a esta pantalla');
+          Alert.alert('Acceso denegado', 'Rol no autorizado para acceder a esta pantalla');
         }
       } catch (error) {
         console.error("Error al decodificar el token:", error);
@@ -37,7 +39,6 @@ const LoginScreen = () => {
       Alert.alert('Error', error.response?.data?.message || 'Error al iniciar sesión');
     }
   };
-  
 
   return (
     <SafeAreaView style={loginStyle.safeContainer}>
