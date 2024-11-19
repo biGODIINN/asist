@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, Alert, StyleSheet, Text, SafeAreaView, Image } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-
 import { Logo_GF_Llegue } from "../../assets/img/Logo_GF_Llegue.png"
+import jwt_decode from 'jwt-decode';
 
 const LoginScreen = () => {
   const [rut, setRut] = useState('');
@@ -16,19 +16,28 @@ const LoginScreen = () => {
         rut,
         password,
       });
-
       const { token } = response.data;
 
-      // Guardar el token (opcionalmente en AsyncStorage)
-      console.log('Token:', token);
-
-      // Redirigir a la pantalla principal (HomeScreen)
-      navigation.navigate('HomeScreen');
+      try {
+        const decodedToken = jwt_decode(token);
+        console.log('Decoded Token:', decodedToken);  
+        const { rol } = decodedToken;  
+        if (rol === 1) {
+          navigation.navigate('HomeScreen');
+        } else {
+          Alert.alert('Acceso denegado', 'No tienes permisos para acceder a esta pantalla');
+        }
+      } catch (error) {
+        console.error("Error al decodificar el token:", error);
+        Alert.alert('Error', 'Error al decodificar el token');
+      }
+  
     } catch (error) {
-      console.error('Error de autenticación:', error.response?.data?.message);
+      console.error('Error de autenticación:', error.response?.data?.message || error);
       Alert.alert('Error', error.response?.data?.message || 'Error al iniciar sesión');
     }
   };
+  
 
   return (
     <SafeAreaView style={loginStyle.safeContainer}>
