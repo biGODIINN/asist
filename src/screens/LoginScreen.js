@@ -17,15 +17,15 @@ const LoginScreen = () => {
         password,
       });
       const { token } = response.data;
-
+  
       try {
         const decodedToken = jwt_decode(token);
         console.log('Decoded Token:', decodedToken);  
         const { rol } = decodedToken;  // Suponiendo que el rol está en decodedToken.rol
         if (rol === 1) {
-          navigation.navigate('HomeAdministrador');  // Si el rol es 1, navega a HomeAdministrador
+          navigation.navigate('AdminTab');  // Si el rol es 1, navega a AdminTab
         } else if (rol === 2) {
-          navigation.navigate('HomeScreen');  // Si el rol es 2, navega a HomeScreen
+          navigation.navigate('TrabajadorTab');  // Si el rol es 2, navega a TrabajadorTab
         } else {
           Alert.alert('Acceso denegado', 'Rol no autorizado para acceder a esta pantalla');
         }

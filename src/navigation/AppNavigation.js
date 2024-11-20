@@ -4,9 +4,8 @@ import { Image, Button } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from "../screens/LoginScreen";
-import { HomeAdministrador } from '../screens/HomeAdminisrtrador/HomeAdministrador';
 import { HomeScreen } from "../screens/HomeScreen";
-import { PerfilStack } from './NavTrabajadores/PerfilStack';
+import { InicioStack } from './NavTrabajadores/InicioStack';
 import { MarcacionStack } from './NavTrabajadores/MarcacionStack';
 import { SolicitudesStack } from './NavTrabajadores/SolicitudesStack';
 import { HistorialStack } from './NavTrabajadores/HistorialStack';
@@ -15,6 +14,7 @@ import { EnrolamientoStack } from './NavAdministrador/EnrolamientoStack';
 import { TrabajadoresStack } from './NavAdministrador/TrabajadoresStack';
 import { MetricasStack } from './NavAdministrador/MetricasStack';
 import { SolicitudesAdminStack } from './NavAdministrador/SolicitudesAdminStack';
+import { InicioAdminStack } from './NavAdministrador/InicioAdminStack';
 import { screen } from "../utils";
 
 const Tab = createBottomTabNavigator();
@@ -28,22 +28,12 @@ function TrabajadorTabs() {
         tabBarActiveTintColor: "#00a680",
         tabBarInactiveTintColor: "#646464",
         tabBarIcon: ({ color, size }) => screenOptions(route, color, size),
-        headerLeft: () => (
-          
-          <Icon
-          name="arrow-back"
-          size={25}
-          color="s"
-          onPress={() => navigation.navigate('HomeScreen')}
-        />
-      )
       })}>
-      {/* <Tab.Screen name={screen.perfil.tab} component={PerfilStack} options={{ title: "Mi Perfil" }} /> */}
+      <Tab.Screen name={screen.inicio.tab} component={InicioStack} options={{ headerShown: false, title: "Inicio"}} />
       <Tab.Screen name={screen.marcacion.tab} component={MarcacionStack} options={{ title: "Marcación" }} />
       <Tab.Screen name={screen.historial.tab} component={HistorialStack} options={{ title: "Historial" }} />
       <Tab.Screen name={screen.solicitudes.tab} component={SolicitudesStack} options={{ title: "Solicitudes" }} />
-      <Tab.Screen name={screen.ajustes.tab} component={AjustesStack} options={{ title: "Ajuste" }} />
-
+      <Tab.Screen name={screen.ajustes.tab} component={AjustesStack} options={{ title: "Ajustes" }} />
     </Tab.Navigator>
   );
 }
@@ -56,16 +46,8 @@ function AdminTabs() {
         tabBarActiveTintColor: "#00a680",
         tabBarInactiveTintColor: "#646464",
         tabBarIcon: ({ color, size }) => screenOptions(route, color, size),
-        headerLeft: () => (
-          // Botón para volver a la pantalla HomeScreen
-          <Icon
-    name="arrow-back"
-    size={25}
-    color=""
-    onPress={() => navigation.navigate('HomeScreen')}
-  />
-)
       })}>
+      <Tab.Screen name={screen.inicioadmin.tab} component={InicioAdminStack} options={{ headerShown: false, title: "Inicio" }} />
       <Tab.Screen name={screen.enrolamiento.tab} component={EnrolamientoStack} options={{ title: "Enrolamiento" }} />
       <Tab.Screen name={screen.trabajadores.tab} component={TrabajadoresStack} options={{ title: "Trabajadores" }} />
       <Tab.Screen name={screen.metricas.tab} component={MetricasStack} options={{ title: "Métricas" }} />
@@ -79,7 +61,6 @@ export function AppNavigation() {
     <Stack.Navigator initialRouteName="LoginScreen">
       <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="HomeAdministrador" component={HomeAdministrador} options={{ headerShown: false }} />
       <Stack.Screen name="TrabajadorTab" component={TrabajadorTabs} options={{ headerShown: false }} />
       <Stack.Screen name="AdminTab" component={AdminTabs} options={{ headerShown: false }} />
     </Stack.Navigator>
@@ -91,9 +72,9 @@ export function AppNavigation() {
 function screenOptions(route, color, size) {
     let iconSource;
 
-    // if (route.name === screen.perfil.tab) {
-    //     iconSource = require('../../assets/img/mi perfil.png');
-    // }
+    if (route.name === screen.inicio.tab) {
+        iconSource = require('../../assets/img/home.png');
+    }
 
     if (route.name === screen.marcacion.tab) {
         iconSource = require('../../assets/img/marcacion.png');
@@ -108,8 +89,12 @@ function screenOptions(route, color, size) {
     }
 
     if (route.name === screen.ajustes.tab) {
-      iconSource = require('../../assets/img/ajustes.png'); 
+      iconSource = require('../../assets/img/ajustes.png');
     }
+
+    if (route.name === screen.inicioadmin.tab) {
+      iconSource = require('../../assets/img/home.png');
+  }
 
     if (route.name === screen.enrolamiento.tab) {
         iconSource = require('../../assets/img/Enrolamiento.png');

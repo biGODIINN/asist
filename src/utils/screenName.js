@@ -1,15 +1,15 @@
 import { Tab } from "react-native-elements"
 
-const perfilStack = {
-    tab: "PerfilTab",
-    perfil: "Perfil",
+const inicioStack = {
+    tab: "InicioTab",
+    inicio: "Inicio",
     // login: "Login",
 };
 
 const marcacionStack = {
     tab: "MarcacionTab",
     marcacion: "Marcacion",
-    // camera: "Camera",
+    camera: "Camera",
 };
 
 const historialStack = {
@@ -29,6 +29,10 @@ const ajustesStack = {
     ajustes: "Ajustes",
 };
 
+const inicioadminStack = {
+    tab: "InicioAdmin",
+    inicioadmin: "InicioAdmin",
+};
 
 const enrolamientoStack = {
     tab: "EnrolamientoTab",
@@ -53,11 +57,12 @@ const trabajadoresStack = {
 };
 
 export const screen = {
-    perfil: perfilStack,
+    inicio: inicioStack,
     marcacion: marcacionStack,
     historial: historialStack,
     solicitudes: solicitudesStack,
     ajustes: ajustesStack,
+    inicioadmin: inicioadminStack,
     enrolamiento: enrolamientoStack,
     metricas: metricasStack,
     solicitudesadmin: solicitudesadminStack,

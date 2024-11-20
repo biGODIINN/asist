@@ -1,16 +1,16 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import { PerfilScreen } from "../../screens/Trabajadores/PerfilScreen"
+import { InicioScreen } from "../../screens/Trabajadores/InicioScreen"
 import {screen} from "../../utils"
 
 const Stack = createNativeStackNavigator();
 
 
-export function PerfilStack() {
+export function InicioStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen 
-            name={screen.perfil.perfil} 
-            component={PerfilScreen} 
+            name={screen.inicio.inicio} 
+            component={InicioScreen} 
             options={{
                 headerShown: false
               }} 

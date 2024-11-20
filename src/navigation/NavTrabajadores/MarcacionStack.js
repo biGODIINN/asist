@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MarcacionScreen } from "../../screens/Trabajadores/Marcacion/MarcacionScreen"
-// import { CameraScreen } from "../screens/Marcacion/CameraScreen/CameraScreen";
+import { CameraScreen } from "../../screens/Trabajadores/Marcacion/CameraScreen/CameraScreen";
 import { screen } from "../../utils"
 
 const Stack = createNativeStackNavigator();
@@ -16,13 +16,13 @@ export function MarcacionStack() {
             headerShown: false 
           }}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           name={screen.marcacion.camera}
           component={CameraScreen}
-          options={{
+          options={{headerShown: false ,
             title: "", 
           }}
-        /> */}
+        />
       </Stack.Navigator>
     );
   }
