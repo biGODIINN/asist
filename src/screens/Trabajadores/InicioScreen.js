@@ -8,6 +8,7 @@ import { ComponentNotificaciones } from "../../components/Trabajador/ComponentNo
 export function InicioScreen() {
   return (
     <>
+    <ScrollView>
       <View style={styles.perfilHome}>
         <PerfilHome />
       </View>
@@ -61,13 +62,14 @@ export function InicioScreen() {
           />
         </ScrollView>
       </View>
+      </ScrollView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
   perfilHome: {
-    marginTop: 10,
+    marginTop: -35,
   },
   notificacionesContainer: {
     marginTop: 0, // Reduce el margen superior para acercar a PerfilHome
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginLeft: 20,
-    marginRight: 20, // Mantén este margen o ajústalo si es necesario
+    marginRight: 20, 
     padding: 10,
     width: "90%",
     height: 110,

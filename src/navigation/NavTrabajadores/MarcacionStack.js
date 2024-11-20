@@ -19,7 +19,7 @@ export function MarcacionStack() {
         <Stack.Screen
           name={screen.marcacion.camera}
           component={CameraScreen}
-          options={{headerShown: false ,
+          options={{headerShown: true ,
             title: "", 
           }}
         />

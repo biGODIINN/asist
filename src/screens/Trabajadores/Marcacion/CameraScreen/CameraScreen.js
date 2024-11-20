@@ -1,23 +1,32 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image, Modal, TextInput } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Image, Modal, TextInput, useWindowDimensions  } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import * as Location from 'expo-location'; // Importamos la librería para la localización
+import { useNavigation } from '@react-navigation/native';
+import successIcon from '../../../../../assets/img/ok.png';
+import * as Location from 'expo-location'; 
+import * as FileSystem from 'expo-file-system'; 
+import * as Print from 'expo-print'; 
 
 export function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
-  const [photo, setPhoto] = useState(null); // Estado para almacenar la foto
-  const [location, setLocation] = useState(null); // Estado para almacenar la ubicación
-  const [time, setTime] = useState(''); // Estado para almacenar la hora
-  const [showModal, setShowModal] = useState(false); // Estado para mostrar el modal de la foto
-  const [showVoucherModal, setShowVoucherModal] = useState(false); // Estado para mostrar el modal del voucher
-  const [voucherDetails, setVoucherDetails] = useState(null); // Detalles del voucher
-  const cameraRef = useRef(null); // Referencia para la cámara
+  const [photo, setPhoto] = useState(null); 
+  const [location, setLocation] = useState(null); 
+  const [address, setAddress] = useState(null); 
+  const [time, setTime] = useState('');
+  const [showModal, setShowModal] = useState(false); 
+  const [showVoucherModal, setShowVoucherModal] = useState(false); 
+  const [voucherDetails, setVoucherDetails] = useState(null);
+  const [showCaptureAlert, setShowCaptureAlert] = useState(false); 
+  const cameraRef = useRef(null);
 
-  // Función para obtener la hora local de Chile
+   // Obtener la dimensión de la pantalla
+   const { width, height } = useWindowDimensions();
+
+  // Obtener hora local
   const getLocalTime = () => {
     const date = new Date();
     const options = {
-      timeZone: 'America/Santiago', // Zona horaria de Chile
+      timeZone: 'America/Santiago',
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
@@ -27,15 +36,23 @@ export function CameraScreen() {
     setTime(timeString);
   };
 
-  // Función para obtener la localización
+  // Obtener ubicación y dirección
   const getLocation = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status === 'granted') {
         const location = await Location.getCurrentPositionAsync({});
-        setLocation(location.coords); // Guardamos las coordenadas (lat, long)
+        setLocation(location.coords); // Guardar las coordenadas
+
+        // Convertir las coordenadas en una dirección legible
+        const geoAddress = await Location.reverseGeocodeAsync(location.coords);
+        if (geoAddress && geoAddress.length > 0) {
+          const { street, city, region, country } = geoAddress[0];
+          const fullAddress = `${street}, ${city}, ${region}, ${country}`;
+          setAddress(fullAddress); // Guardar la dirección
+        }
       } else {
-        alert('Permission to access location was denied');
+        alert('Se denegó el permiso para acceder a la ubicación.');
       }
     } catch (error) {
       console.error(error);
@@ -43,8 +60,8 @@ export function CameraScreen() {
   };
 
   useEffect(() => {
-    getLocalTime(); // Obtenemos la hora cuando la pantalla se carga
-    getLocation(); // Obtenemos la localización
+    getLocalTime(); 
+    getLocation(); 
   }, []);
 
   if (!permission) {
@@ -54,71 +71,95 @@ export function CameraScreen() {
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="Grant Permission" />
+        <Text style={styles.message}>Necesitamos su permiso para mostrar la cámara.</Text>
+        <Button onPress={requestPermission} title="Conceder permiso" />
       </View>
     );
   }
 
-  // Función para tomar una foto
   const takePhoto = async () => {
     if (cameraRef.current) {
       const photoData = await cameraRef.current.takePictureAsync();
-      setPhoto(photoData.uri); // Guardamos la URI de la foto tomada
-      getLocalTime(); // Actualizamos la hora local al tomar la foto
-      getLocation(); // Actualizamos la localización al tomar la foto
-      setShowModal(true); // Mostramos el modal con los botones
+      setPhoto(photoData.uri); 
+      getLocalTime(); 
+      getLocation(); 
+      setShowModal(true); 
     }
   };
 
-  // Función para cerrar el modal de la foto
   const closeModal = () => {
     setShowModal(false);
-    setPhoto(null); // Limpiamos la foto al cerrar el modal
+    setPhoto(null); 
   };
 
-  // Función para confirmar la foto y mostrar el voucher
   const confirmPhoto = () => {
-    // Aquí puedes poner la lógica para crear el voucher
     const newVoucher = {
-      name: 'Juan Pérez', // Ejemplo, puedes obtener esto desde un formulario o una API
+      name: 'Juan Pérez',
       rut: '12.345.678-9',
       position: 'Desarrollador',
       contractType: 'Indefinido',
       company: 'Mi Empresa',
-      location: location
-        ? `Lat: ${location.latitude.toFixed(4)}, Lon: ${location.longitude.toFixed(4)}`
-        : 'Ubicación no disponible',
-      checkInOut: 'Entrada', // Puedes cambiar esto dependiendo de si es entrada o salida
+      location: address || 'Ubicación no disponible',
+      checkInOut: 'Entrada',
       dateTime: time,
     };
 
-    setVoucherDetails(newVoucher); // Establecemos los detalles del voucher
-    setShowModal(false); // Cierra el modal de la foto
-    setShowVoucherModal(true); // Mostramos el modal del voucher
+    setVoucherDetails(newVoucher);
+    setShowModal(false);
+
+    setShowCaptureAlert(true);
+    setTimeout(() => {
+      setShowCaptureAlert(false);
+      setShowVoucherModal(true); 
+    }, 2000);
   };
 
-  // Función para repetir la foto
   const repeatPhoto = () => {
-    setPhoto(null); // Limpiamos la foto tomada
-    setShowModal(false); // Cierra el modal
-    takePhoto(); // Vuelve a tomar la foto
+    setPhoto(null); 
+    setShowModal(false); 
+    takePhoto(); 
   };
 
-  // Función para cerrar el modal del voucher
-  const closeVoucherModal = () => {
-    setShowVoucherModal(false);
+  const closeVoucherModal = async () => {
+    const voucherHtml = `
+      <html>
+        <body>
+          <h1>Voucher de Marcación</h1>
+          <p><strong>Nombre:</strong> ${voucherDetails.name}</p>
+          <p><strong>RUT:</strong> ${voucherDetails.rut}</p>
+          <p><strong>Cargo:</strong> ${voucherDetails.position}</p>
+          <p><strong>Tipo de contrato:</strong> ${voucherDetails.contractType}</p>
+          <p><strong>Empresa:</strong> ${voucherDetails.company}</p>
+          <p><strong>Ubicación:</strong> ${voucherDetails.location}</p>
+          <p><strong>Tipo de Marcación:</strong> ${voucherDetails.checkInOut}</p>
+          <p><strong>Fecha y Hora:</strong> ${voucherDetails.dateTime}</p>
+        </body>
+      </html>
+    `;
+
+    try {
+      const { uri } = await Print.printToFileAsync({ html: voucherHtml });
+
+      const fileName = `Voucher_${new Date().toISOString()}.pdf`;
+      const fileUri = FileSystem.documentDirectory + fileName;
+
+      await FileSystem.copyAsync({
+        from: uri,
+        to: fileUri,
+      });
+
+      alert(`Voucher descargado exitosamente! Puedes ver el archivo en: ${fileUri}`);
+    } catch (error) {
+      console.error('Error al generar o guardar el PDF:', error);
+    } finally {
+      setShowVoucherModal(false); 
+    }
   };
 
   return (
     <View style={styles.container}>
-      {/* Mostrar la vista de la cámara frontal */}
-      {!showModal ? ( // Mostrar la cámara solo cuando no se está mostrando el modal
-        <CameraView
-          style={styles.camera}
-          facing="front"
-          ref={cameraRef} // Referencia a la cámara
-        >
+      {!showModal ? (
+        <CameraView style={styles.camera} facing="front" ref={cameraRef}>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={takePhoto}>
               <Text style={styles.text}>Capturar</Text>
@@ -127,71 +168,104 @@ export function CameraScreen() {
         </CameraView>
       ) : null}
 
-      {/* Modal para mostrar la foto a pantalla completa */}
       <Modal
         visible={showModal}
         animationType="fade"
-        transparent={false}
-        onRequestClose={closeModal} // Cierra el modal cuando se presiona el botón de atrás (en Android)
+        transparent={true}
+        onRequestClose={closeModal}
       >
-        <View style={styles.modalContainer}>
-          <Image source={{ uri: photo }} style={styles.fullScreenPhoto} />
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <Image source={{ uri: photo }} style={styles.fullScreenPhoto} />
 
-          {/* Botón para cerrar el modal */}
-          <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-            <Text style={styles.closeButtonText}>X</Text>
-          </TouchableOpacity>
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoText}>Hora: {time}</Text>
+              {address ? (
+                <Text style={styles.infoText}>Ubicación: {address}</Text>
+              ) : (
+                <Text style={styles.infoText}>Cargando dirección...</Text>
+              )}
 
-          {/* Contenedor de la información */}
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoText}>Hora (Chile): {time}</Text>
-            {location ? (
-              <Text style={styles.infoText}>
-                Ubicación: Lat {location.latitude.toFixed(4)}, Lon {location.longitude.toFixed(4)}
-              </Text>
-            ) : (
-              <Text style={styles.infoText}>Cargando ubicación...</Text>
-            )}
+              <TouchableOpacity style={styles.confirmButton} onPress={confirmPhoto}>
+                <Text style={styles.confirmButtonText}>Confirmar</Text>
+              </TouchableOpacity>
 
-            {/* Botón de Confirmar Foto */}
-            <TouchableOpacity style={styles.confirmButton} onPress={confirmPhoto}>
-              <Text style={styles.confirmButtonText}>Confirmar</Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={styles.repeatButton} onPress={repeatPhoto}>
+                <Text style={styles.repeatButtonText}>Repetir</Text>
+              </TouchableOpacity>
+            </View>
 
-            {/* Botón de Repetir Foto */}
-            <TouchableOpacity style={styles.repeatButton} onPress={repeatPhoto}>
-              <Text style={styles.repeatButtonText}>Repetir</Text>
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+              <Text style={styles.closeButtonText}>X</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-
-      {/* Modal para mostrar el voucher con los detalles de la marcación */}
+      
+      {/* Alerta de captura exitosa */}
       <Modal
-        visible={showVoucherModal}
+        visible={showCaptureAlert}
+        transparent={true}
         animationType="fade"
-        transparent={false}
-        onRequestClose={closeVoucherModal}
+        onRequestClose={() => setShowCaptureAlert(false)}
       >
-        <View style={styles.voucherModalContainer}>
-          <Text style={styles.voucherTitle}>Detalles de la Marcación</Text>
+        <View style={styles.alertBackground}>
+          <View style={styles.alertContainer}>
+            <Image source={successIcon} style={styles.successIcon} />
+            <Text style={styles.alertText}>Captura exitosa</Text>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+      visible={showVoucherModal}
+      animationType="fade"
+      transparent={false}
+      onRequestClose={closeVoucherModal}
+    >
+      <View style={styles.voucherModalContainer}>
+        
+        {/* Imagen y los detalles del voucher estarán dentro del mismo modal */}
+        <View style={styles.modalContent}>
+          {/* Imagen del voucher */}
+          <Image 
+            source={require('../../../../../assets/img/logo.png')}  // Asegúrate de poner la ruta correcta de tu imagen
+            style={styles.voucherTitleImage}
+          />
+
+          {/* Detalles del voucher */}
           {voucherDetails && (
             <View style={styles.voucherDetailsContainer}>
-              <Text style={styles.voucherText}>Nombre: {voucherDetails.name}</Text>
-              <Text style={styles.voucherText}>RUT: {voucherDetails.rut}</Text>
-              <Text style={styles.voucherText}>Cargo: {voucherDetails.position}</Text>
-              <Text style={styles.voucherText}>Tipo de contrato: {voucherDetails.contractType}</Text>
-              <Text style={styles.voucherText}>Empresa: {voucherDetails.company}</Text>
-              <Text style={styles.voucherText}>Ubicación: {voucherDetails.location}</Text>
-              <Text style={styles.voucherText}>Tipo de Marcación: {voucherDetails.checkInOut}</Text>
-              <Text style={styles.voucherText}>Fecha y Hora: {voucherDetails.dateTime}</Text>
+              <Text style={styles.voucherLabel}>Nombre:</Text>
+              <Text style={styles.voucherData}>{voucherDetails.name}</Text>
+
+              <Text style={styles.voucherLabel}>RUT:</Text>
+              <Text style={styles.voucherData}>{voucherDetails.rut}</Text>
+
+              <Text style={styles.voucherLabel}>Cargo:</Text>
+              <Text style={styles.voucherData}>{voucherDetails.position}</Text>
+
+              <Text style={styles.voucherLabel}>Tipo de contrato:</Text>
+              <Text style={styles.voucherData}>{voucherDetails.contractType}</Text>
+
+              <Text style={styles.voucherLabel}>Empresa:</Text>
+              <Text style={styles.voucherData}>{voucherDetails.company}</Text>
+
+              <Text style={styles.voucherLabel}>Ubicación:</Text>
+              <Text style={styles.voucherData}>{voucherDetails.location}</Text>
+
+              <Text style={styles.voucherLabel}>Tipo de Marcación:</Text>
+              <Text style={styles.voucherData}>{voucherDetails.checkInOut}</Text>
+
+              <Text style={styles.voucherLabel}>Fecha y Hora:</Text>
+              <Text style={styles.voucherData}>{voucherDetails.dateTime}</Text>
             </View>
           )}
 
-          {/* Botón para cerrar el modal del voucher */}
           <TouchableOpacity style={styles.closeVoucherButton} onPress={closeVoucherModal}>
-            <Text style={styles.closeVoucherButtonText}>Cerrar</Text>
+            <Text style={styles.closeVoucherButtonText}>Descargar</Text>
           </TouchableOpacity>
+        </View>
         </View>
       </Modal>
     </View>
@@ -199,127 +273,156 @@ export function CameraScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  camera: {
-    flex: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  button: {
-    width: '90%',
-    padding: 13,
-    borderRadius: 50,
-    marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#4CAF50',
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  confirmButton: {
-    backgroundColor: '#4CAF50',
-    width: '100%',
-    padding: 14,
-    borderRadius: 50,
-    marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  confirmButtonText: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  repeatButton: {
-    backgroundColor: 'white',
-    width: '100%',
-    padding: 14,
-    borderRadius: 50,
-    marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  repeatButtonText: {
-    fontSize: 20,
-    color: '#4CAF50',
-    fontWeight: 'bold',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'black',
-  },
-  fullScreenPhoto: {
-    width: '100%',
-    height: '80%',
-    resizeMode: 'contain',
-  },
-  infoContainer: {
-    padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    width: '100%',
-    position: 'absolute',
-    bottom: 0,
-    alignItems: 'center',
-  },
-  infoText: {
-    fontSize: 18,
-    color: 'white',
-    marginBottom: 10,
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    backgroundColor: 'transparent',
-    padding: 10,
-    borderRadius: 50,
-  },
-  closeButtonText: {
-    fontSize: 30,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  voucherModalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    padding: 20,
-  },
-  voucherTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  voucherDetailsContainer: {
-    marginBottom: 20,
-  },
-  voucherText: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  closeVoucherButton: {
-    padding: 14,
-    backgroundColor: '#4CAF50',
-    borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeVoucherButtonText: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'white',
+    },
+    message: {
+      fontSize: 18,
+      textAlign: 'center',
+      marginBottom: 20,
+    },
+    camera: {
+      width: '100%',
+      height: '100%',
+    },
+    buttonContainer: {
+      position: 'absolute',
+      bottom: 10,
+      left: '15%',
+    },
+    button: {
+      paddingVertical: 15,
+      paddingHorizontal: 100,
+      borderRadius: 50,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#4CAF50',
+    },
+    text: {
+      color: 'white',
+      fontSize: 18,
+    },
+    modalBackground: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    },
+    modalContainer: {
+      width: '80%',
+      backgroundColor: 'white',
+      borderRadius: 10,
+      padding: 20,
+      alignItems: 'center',
+    },
+    fullScreenPhoto: {
+      width: '100%',
+      height: 250,
+      borderRadius: 10,
+      marginBottom: 15,
+    },
+    infoContainer: {
+      alignItems: 'center',
+    },
+    infoText: {
+      fontSize: 16,
+      marginBottom: 10,
+      color: '#333',
+    },
+    confirmButton: {
+      backgroundColor: '#28a745',
+      paddingVertical: 10,
+      paddingHorizontal: 90,
+      borderRadius: 39,
+      marginBottom: 10,
+    },
+    confirmButtonText: {
+      color: 'white',
+      fontSize: 15,
+    },
+    repeatButton: {
+      backgroundColor: '#fff',
+      paddingVertical: 10,
+      paddingHorizontal: 100,
+      borderRadius: 30,
+      borderWidth: 2,
+      borderColor: '#28a745',
+    },
+    repeatButtonText: {
+      color: 'green',
+      fontSize: 13,
+    },
+    closeButton: {
+      position: 'absolute',
+      top: 2,
+      right: 5,
+    },
+    closeButtonText: {
+      fontSize: 24,
+      color: 'gray',
+    },
+    alertBackground: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    alertContainer: {
+      backgroundColor: 'white',
+      padding: 20,
+      borderRadius: 10,
+      alignItems: 'center',
+    },
+    successIcon: {
+      width: 50,
+      height: 50,
+      marginBottom: 10,
+    },
+    alertText: {
+      fontSize: 18,
+      color: '#28a745',
+    },
+    voucherModalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+      },
+      modalContent: {
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 10,
+        width: '80%',
+        alignItems: 'center',
+      },
+      voucherTitleImage: {
+        width: 150, 
+        height: 75,
+        resizeMode: 'contain', 
+        marginBottom: 20,  
+      },
+      voucherDetailsContainer: {
+        width: '100%',
+        marginBottom: -1,
+      },
+      voucherLabel: {
+        fontWeight: 'bold',
+        marginBottom: 5,
+      },
+      voucherData: {
+        marginBottom: 15,
+      },
+      closeVoucherButton: {
+        backgroundColor: '#4CAF50',
+        padding: 10,
+        borderRadius: 30,
+        paddingHorizontal: 60,
+      },
+      closeVoucherButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+      },
+    });
