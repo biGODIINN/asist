@@ -1,6 +1,6 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {HistorialScreen} from "../../screens/Trabajadores/Historial/HistorialScreen"
-// import { HistorialDetallesScreen } from "../screens/Historial/HistorialDetallesScreen/HistorialDetallesScreen";
+import { HistorialDetallesScreen } from "../../screens/Trabajadores/Historial/HistorialDetallesScreen/HistorialDetallesScreen"
 import {screen} from "../../utils"
 
 const Stack = createNativeStackNavigator();
@@ -12,13 +12,13 @@ export function HistorialStack() {
             <Stack.Screen 
             name={screen.historial.historial} 
             component={HistorialScreen} 
-            options={{headerShown: false}} 
+            options={{headerShown: true}} 
             />
-            {/* <Stack.Screen 
+            <Stack.Screen 
             name={screen.historial.historialdetalles} 
             component={HistorialDetallesScreen} 
             options={{title: "Detalles"}} 
-            /> */}
+            />
      </Stack.Navigator>
     );
 }

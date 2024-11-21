@@ -30,9 +30,9 @@ function TrabajadorTabs() {
         tabBarIcon: ({ color, size }) => screenOptions(route, color, size),
       })}>
       <Tab.Screen name={screen.inicio.tab} component={InicioStack} options={{ headerShown: false, title: "Inicio"}} />
-      <Tab.Screen name={screen.historial.tab} component={HistorialStack} options={{ title: "Historial" }} />
+      <Tab.Screen name={screen.historial.tab} component={HistorialStack} options={{ headerShown: false, title: "Historial" }} />
       <Tab.Screen name={screen.marcacion.tab} component={MarcacionStack} options={{ headerShown: false, title: "Marcación" }} />
-      <Tab.Screen name={screen.solicitudes.tab} component={SolicitudesStack} options={{headerShown: false,title: "Solicitudes" }} />
+      <Tab.Screen name={screen.solicitudes.tab} component={SolicitudesStack} options={{ headerShown: false,title: "Solicitudes" }} />
       <Tab.Screen name={screen.ajustes.tab} component={AjustesStack} options={{ title: "Ajustes" }} />
     </Tab.Navigator>
   );

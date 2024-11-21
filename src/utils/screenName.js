@@ -15,7 +15,7 @@ const marcacionStack = {
 const historialStack = {
     tab: "HistorialTab",
     historial: "Historial",
-    // historialdetalles: "HistorialDetalles"
+    historialdetalles: "HistorialDetalles"
 };
 
 const solicitudesStack = {
