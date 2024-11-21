@@ -21,7 +21,7 @@ const historialStack = {
 const solicitudesStack = {
     tab: "SolicitudesTab",
     solicitudes: "Solicitudes",
-    // addsolicitudes: "AddSolicitudes",
+    addsolicitudes: "AddSolicitudes",
 };
 
 const ajustesStack = {

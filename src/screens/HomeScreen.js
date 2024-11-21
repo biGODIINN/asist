@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { View, Text } from 'react-native';
 
 export function HomeScreen({ navigation }) {
-  // Simulamos dos usuarios con diferentes roles
+  
   const users = [
-    { id: 1, id_rol: 1, name: 'Admin User' }, // Admin
-    { id: 2, id_rol: 2, name: 'Trabajador User' } // Trabajador
+    { id: 1, id_rol: 1, name: 'Admin User' }, 
+    { id: 2, id_rol: 2, name: 'Trabajador User' } 
   ];
 
   useEffect(() => {

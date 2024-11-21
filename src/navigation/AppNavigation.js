@@ -30,9 +30,9 @@ function TrabajadorTabs() {
         tabBarIcon: ({ color, size }) => screenOptions(route, color, size),
       })}>
       <Tab.Screen name={screen.inicio.tab} component={InicioStack} options={{ headerShown: false, title: "Inicio"}} />
-      <Tab.Screen name={screen.marcacion.tab} component={MarcacionStack} options={{ headerShown: false, title: "Marcación" }} />
       <Tab.Screen name={screen.historial.tab} component={HistorialStack} options={{ title: "Historial" }} />
-      <Tab.Screen name={screen.solicitudes.tab} component={SolicitudesStack} options={{ title: "Solicitudes" }} />
+      <Tab.Screen name={screen.marcacion.tab} component={MarcacionStack} options={{ headerShown: false, title: "Marcación" }} />
+      <Tab.Screen name={screen.solicitudes.tab} component={SolicitudesStack} options={{headerShown: false,title: "Solicitudes" }} />
       <Tab.Screen name={screen.ajustes.tab} component={AjustesStack} options={{ title: "Ajustes" }} />
     </Tab.Navigator>
   );
@@ -42,7 +42,7 @@ function AdminTabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route, navigation }) => ({
-        headerShown: true,  // Mostrar encabezado
+        headerShown: true, 
         tabBarActiveTintColor: "#00a680",
         tabBarInactiveTintColor: "#646464",
         tabBarIcon: ({ color, size }) => screenOptions(route, color, size),
@@ -51,7 +51,7 @@ function AdminTabs() {
       <Tab.Screen name={screen.enrolamiento.tab} component={EnrolamientoStack} options={{ title: "Enrolamiento" }} />
       <Tab.Screen name={screen.trabajadores.tab} component={TrabajadoresStack} options={{ title: "Trabajadores" }} />
       <Tab.Screen name={screen.metricas.tab} component={MetricasStack} options={{ title: "Métricas" }} />
-      <Tab.Screen name={screen.solicitudesadmin.tab} component={SolicitudesAdminStack} options={{ title: "Solicitudes" }} />
+      <Tab.Screen name={screen.solicitudesadmin.tab} component={SolicitudesAdminStack} options={{ headerShown: false, title: "Solicitudes" }} />
     </Tab.Navigator>
   );
 }
