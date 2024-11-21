@@ -3,7 +3,8 @@ import { StyleSheet, Text, View, Image } from "react-native";
 export function Otros({ imageUri, title, description, style, nuevo }) {
   return (
     <View style={OtrosStyle.bg}>
-      <Image source={{ uri: imageUri }} style={OtrosStyle.image} />
+      {/* Usando require() para cargar la imagen */}
+      <Image source={imageUri} style={OtrosStyle.image} />
       <View style={[OtrosStyle.bg2, style]}>
         <Text style={OtrosStyle.title}>{title}</Text>
         <Text style={OtrosStyle.description}>{description}</Text>

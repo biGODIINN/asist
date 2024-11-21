@@ -1,8 +1,6 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 
-
-
-export  function PerfilHome() {
+export function PerfilHome() {
   return (
     <View style={perfilAdminStyle.container}>
       <View>
@@ -10,9 +8,7 @@ export  function PerfilHome() {
         <Text style={perfilAdminStyle.titulo2}>Bienvenido!</Text>
       </View>
       <Image
-        source={{
-          uri: "/Users/grupofirma/Documents/app_asistencia_front2/assets/icon.png",
-        }}
+        source={require("../../../assets/img/fotoperfil.png")} // Cambié la ruta a require
         style={perfilAdminStyle.image}
       />
     </View>
@@ -27,7 +23,7 @@ const perfilAdminStyle = StyleSheet.create({
     marginTop: 60,
     height: 100,
     padding: 10,
-    marginLeft: 20,
+    marginLeft: 0,
   },
   titulo: {
     fontSize: 24,
@@ -38,11 +34,13 @@ const perfilAdminStyle = StyleSheet.create({
     fontWeight: "light",
   },
   image: {
-    width: 52,
+    width: 70,
     height: 70,
     resizeMode: "cover",
-    marginLeft: 10,
+    marginLeft: 20,
     marginRight: 20,
-    borderRadius: 20,
+    borderRadius: 40, // Para bordes redondeados
+    borderWidth: 3, // Ancho del borde
+    borderColor: "#fff", // Color del borde
   },
 });

@@ -3,7 +3,7 @@ import { Tab } from "react-native-elements"
 const inicioStack = {
     tab: "InicioTab",
     inicio: "Inicio",
-    // login: "Login",
+    metricas: "Metricas",
 };
 
 const marcacionStack = {

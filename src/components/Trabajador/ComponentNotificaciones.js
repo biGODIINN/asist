@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 
-export function ComponentNotificaciones({ src, titulo, texto, style, nuevo }) {
+export function ComponentNotificaciones({ imageUri, titulo, texto, style, nuevo }) {
   return (
     <View style={[style, notificacionesStyles.container]}>
-      <Image source={{ uri: src }} style={notificacionesStyles.image} />
+      <Image source={{ imageUri }} style={notificacionesStyles.image} />
       <View style={notificacionesStyles.textContainer}>
         <Text style={notificacionesStyles.titulo}>{titulo}</Text>
         <Text style={notificacionesStyles.text}>{texto}</Text>
