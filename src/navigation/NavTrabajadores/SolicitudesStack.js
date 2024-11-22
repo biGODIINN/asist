@@ -8,7 +8,14 @@ const Stack = createNativeStackNavigator();
 
 export function SolicitudesStack() {
     return (
-        <Stack.Navigator>
+        <>
+        <Stack.Navigator
+            screenOptions={{
+            headerTintColor: "black",
+            headerTitleAlign: "center",
+            headerShown: true,
+            }}
+            >
             <Stack.Screen 
             name={screen.solicitudes.solicitudes} 
             component={SolicitudesScreen} 
@@ -20,5 +27,6 @@ export function SolicitudesStack() {
             options={{title: "Añadir Solicitudes"}} 
             />
      </Stack.Navigator>
+     </>
     );
 }

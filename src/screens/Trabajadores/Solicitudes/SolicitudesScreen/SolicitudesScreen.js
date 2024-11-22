@@ -13,7 +13,6 @@ export function SolicitudesScreen(props) {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Solicitudes</Text>
 
         <View style={styles.cardsContainer}>
           <View style={styles.cardApproved}>
@@ -79,7 +78,7 @@ export function SolicitudesScreen(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
   },
 
   content: {

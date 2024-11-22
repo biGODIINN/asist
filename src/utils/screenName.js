@@ -27,7 +27,14 @@ const solicitudesStack = {
 const ajustesStack = {
     tab: "AjustesTab",
     ajustes: "Ajustes",
-};
+    enrolamineto: "Enrolamiento",
+    notification: "NotificacionesAjuste",
+    password: "Contraseña",
+    acerca: "AcercaDe",
+    terminosYCondiciones: "TerminosCondiciones",
+    ayuda: "Ayuda",
+    inicio: "Inicio",
+  };
 
 const inicioadminStack = {
     tab: "InicioAdmin",

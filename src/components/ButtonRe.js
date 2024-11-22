@@ -1,10 +1,26 @@
 import React from "react";
-import { Button, View, StyleSheet, TouchableOpacity,Text } from "react-native";
+import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 
-export function ButtonRe({ title, onPress , style }) {
+export function ButtonRe({
+  title,
+  onPress,
+  buttonStyle,
+  textStyle,
+  disableTouchable,
+}) {
+  
+  // Si disableTouchable es verdadero, se usa un View sin TouchableOpacity.
+  if (disableTouchable) {
+    return (
+      <View style={[styles.button, buttonStyle]}>
+        <Text style={textStyle}>{title}</Text>
+      </View>
+    );
+  }
+
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-      <Text style={styles.buttonText}>{title}</Text>
+    <TouchableOpacity onPress={onPress} style={[styles.button, buttonStyle]}>
+      <Text style={textStyle}>{title}</Text>
     </TouchableOpacity>
   );
 }
@@ -14,10 +30,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
-    height:46,
-    paddingTop:10
-  },
-  buttonText: {
-    color: "#fff",
+    height: 46,
+    paddingTop: 10,
   },
 });

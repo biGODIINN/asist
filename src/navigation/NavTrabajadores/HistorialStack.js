@@ -8,7 +8,13 @@ const Stack = createNativeStackNavigator();
 
 export function HistorialStack() {
     return (
-        <Stack.Navigator>
+        <>
+        <Stack.Navigator screenOptions={{
+            headerTintColor: "black",
+            headerTitleAlign: "center",
+            headerShown: true,
+            }}
+            >
             <Stack.Screen 
             name={screen.historial.historial} 
             component={HistorialScreen} 
@@ -20,5 +26,6 @@ export function HistorialStack() {
             options={{title: "Detalles"}} 
             />
      </Stack.Navigator>
+     </>
     );
 }

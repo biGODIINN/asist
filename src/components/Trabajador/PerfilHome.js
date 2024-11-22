@@ -39,8 +39,8 @@ const perfilAdminStyle = StyleSheet.create({
     resizeMode: "cover",
     marginLeft: 20,
     marginRight: 20,
-    borderRadius: 40, // Para bordes redondeados
-    borderWidth: 3, // Ancho del borde
-    borderColor: "#fff", // Color del borde
+    borderRadius: 40, 
+    borderWidth: 3, 
+    borderColor: "#fff", 
   },
 });
